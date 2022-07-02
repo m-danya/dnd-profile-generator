@@ -183,25 +183,8 @@ export default function App() {
                     )}
                 </div>
 
-                <div>
-                    {Boolean(completedBgCrop) && (
-                        <canvas
-                            ref={previewCanvasRef1}
-                            style={{
-                                border: '1px solid black',
-                                objectFit: 'contain',
-                                width: completedBgCrop.width,
-                                height: completedBgCrop.height,
-                            }}
-                        />
-                    )}
-                </div>
-                <div>info: {bgImgRef.current && (bgImgRef.current.naturalWidth / bgImgRef.current.width)}</div>
-                <div>info: {avImgRef.current && (avImgRef.current.naturalWidth / avImgRef.current.width)}</div>
-                <div>info: {JSON.stringify(completedBgCrop)}</div>
-                <div>info: {JSON.stringify(completedAvCrop)}</div>
                 <Button type="submit">
-                    Save
+                    Process
                 </Button>
                 <input type="hidden" name="background_crop" value={JSON.stringify(completedBgCrop)}/>
                 <input type="hidden" name="background_scale" value={bgImgRef.current && (bgImgRef.current.naturalWidth / bgImgRef.current.width)}/>
