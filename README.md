@@ -4,7 +4,7 @@ Create a beautiful printout for your DnD character
 
 #### Development status
 
-20% is done
+35% is done
 
 
 ### How to host
@@ -19,4 +19,15 @@ npm start
 
 ##### Backend
 
-TBD
+```bash
+# install python and libraries into venv
+cd backend
+sudo apt install python3.9
+python3.9 -m pip install virtualenv
+python3.9 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+
+# run the backend
+uvicorn main:app
+```

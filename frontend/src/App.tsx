@@ -1,6 +1,7 @@
 import React, {useState, useRef} from 'react'
 import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
 
 import ReactCrop, {
     centerCrop,
@@ -132,69 +133,83 @@ export default function App() {
 
     return (
         <Container className="p-3">
-            <div className="mb-3 width-500">
-                <label htmlFor="formFile" className="form-label fs-3">1. Загрузите фон</label>
-                <input className="form-control" type="file" accept="image/*" onChange={onSelectFileForBg}/>
-            </div>
-            <div className="width-500">
-                {Boolean(bgImgSrc) && (
-                    <ReactCrop
-                        crop={bgCrop}
-                        onChange={(_, percentCrop) => setBgCrop(percentCrop)}
-                        onComplete={(c) => setCompletedBgCrop(c)}
-                        aspect={bgAspect}
-                    >
-                        <img
-                            ref={bgImgRef}
-                            alt="Crop me"
-                            src={bgImgSrc}
-                            onLoad={onImageLoadBg}
-                        />
-                    </ReactCrop>
-                )}
-            </div>
+            <Form
+                action="http://localhost:8000/process"
+                method="POST"
+                enctype="multipart/form-data"
+            >
+                <div className="mb-3 width-500">
+                    <label htmlFor="formFile" className="form-label fs-3">1. Загрузите фон</label>
+                    <input className="form-control" type="file" name="original_background_image" accept="image/*"
+                           onChange={onSelectFileForBg}/>
+                </div>
+                <div className="width-500">
+                    {Boolean(bgImgSrc) && (
+                        <ReactCrop
+                            crop={bgCrop}
+                            onChange={(_, percentCrop) => setBgCrop(percentCrop)}
+                            onComplete={(c) => setCompletedBgCrop(c)}
+                            aspect={bgAspect}
+                        >
+                            <img
+                                ref={bgImgRef}
+                                alt="Crop me"
+                                src={bgImgSrc}
+                                onLoad={onImageLoadBg}
+                            />
+                        </ReactCrop>
+                    )}
+                </div>
 
-            <div className="mb-3 width-500">
-                <label htmlFor="formFile" className="form-label fs-3">2. Загрузите картинку персонажа</label>
-                <input className="form-control" type="file" accept="image/*" onChange={onSelectFileForAv}/>
-            </div>
-            <div className="width-500">
-                {Boolean(avImgSrc) && (
-                    <ReactCrop
-                        crop={avCrop}
-                        onChange={(_, percentCrop) => setAvCrop(percentCrop)}
-                        onComplete={(c) => setCompletedAvCrop(c)}
-                        aspect={avAspect}>
-                        <img
-                            ref={avImgRef}
-                            alt="Crop me"
-                            src={avImgSrc}
-                            onLoad={onImageLoadAv}
-                        />
-                    </ReactCrop>
-                )}
-            </div>
+                <div className="mb-3 width-500">
+                    <label htmlFor="formFile" className="form-label fs-3">2. Загрузите картинку персонажа</label>
+                    <input className="form-control" type="file" name="original_avatar_image" accept="image/*"
+                           onChange={onSelectFileForAv}/>
+                </div>
+                <div className="width-500">
+                    {Boolean(avImgSrc) && (
+                        <ReactCrop
+                            crop={avCrop}
+                            onChange={(_, percentCrop) => setAvCrop(percentCrop)}
+                            onComplete={(c) => setCompletedAvCrop(c)}
+                            aspect={avAspect}>
+                            <img
+                                ref={avImgRef}
+                                alt="Crop me"
+                                src={avImgSrc}
+                                onLoad={onImageLoadAv}
+                            />
+                        </ReactCrop>
+                    )}
+                </div>
 
-            {/*<div>*/}
-            {/*    {Boolean(completedBgCrop) && (*/}
-            {/*        <canvas*/}
-            {/*            ref={previewCanvasRef1}*/}
-            {/*            style={{*/}
-            {/*                border: '1px solid black',*/}
-            {/*                objectFit: 'contain',*/}
-            {/*                width: completedBgCrop.width,*/}
-            {/*                height: completedBgCrop.height,*/}
-            {/*            }}*/}
-            {/*        />*/}
-            {/*    )}*/}
-            {/*</div>*/}
-            {/*<div>info: {JSON.stringify(completedBgCrop)}</div>*/}
-            <Button onClick={() => {
-                let image = previewCanvasRef1.current.toDataURL("image/png").replace("image/png", "image/octet-stream");  // here is the most important part because if you dont replace you will get a DOM 18 exception.
-                window.location.href = image; // it will save locally
-            }}>
-                Save
-            </Button>
+                <div>
+                    {Boolean(completedBgCrop) && (
+                        <canvas
+                            ref={previewCanvasRef1}
+                            style={{
+                                border: '1px solid black',
+                                objectFit: 'contain',
+                                width: completedBgCrop.width,
+                                height: completedBgCrop.height,
+                            }}
+                        />
+                    )}
+                </div>
+                <div>info: {bgImgRef.current && (bgImgRef.current.naturalWidth / bgImgRef.current.width)}</div>
+                <div>info: {avImgRef.current && (avImgRef.current.naturalWidth / avImgRef.current.width)}</div>
+                <div>info: {JSON.stringify(completedBgCrop)}</div>
+                <div>info: {JSON.stringify(completedAvCrop)}</div>
+                <Button type="submit">
+                    Save
+                </Button>
+                <input type="hidden" name="background_crop" value={JSON.stringify(completedBgCrop)}/>
+                <input type="hidden" name="background_scale" value={bgImgRef.current && (bgImgRef.current.naturalWidth / bgImgRef.current.width)}/>
+                <input type="hidden" name="background_aspect" value={BG_ASPECT}/>
+                <input type="hidden" name="avatar_crop" value={JSON.stringify(completedAvCrop)}/>
+                <input type="hidden" name="avatar_scale" value={avImgRef.current && (avImgRef.current.naturalWidth / avImgRef.current.width)}/>
+                <input type="hidden" name="avatar_aspect" value={AV_ASPECT}/>
+            </Form>
         </Container>
     )
 }
