@@ -4,7 +4,7 @@ Create a beautiful printout for your DnD character
 
 #### Development status
 
-45% is done
+65% is done
 
 
 ### How to host
